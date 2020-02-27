@@ -2,10 +2,21 @@ pipeline {
   agent any
     
     stages {
-        stage('make zip file') {
+        stage('Cloning Git') {
             steps {
-                sh "zip -r ./deploy.zip ."
+                git 'https://github.com/jeongraeJR/test.git'
+            }
+        }
+        stage('npm install') {
+            steps {
+                sh "npm install"
             }
         }   
+
+         stage('npm start') {
+            steps {
+                sh "npm start"
+            }
+        }  
     }
 }
