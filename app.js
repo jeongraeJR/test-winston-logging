@@ -2,20 +2,8 @@ var createError = require("http-errors");
 var express = require("express");
 var path = require("path");
 var cookieParser = require("cookie-parser");
-var winston = require("winston");
-var logger = winston.createLogger({
-    level: "info",
-    format: winston.format.json(),
-    transports: [new winston.transports.Console()]
-});
-
-console.log("mode:"+process.env.NODE_ENV);
-if (process.env.NODE_ENV == "development") {
- 
-    logger.level = "debug";
-}
-
 require("dotenv").config();
+var logger = require('./logger');
 
 var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
@@ -40,7 +28,7 @@ app.use(function(req, res, next) {
     next(createError(404));
 });
 
-app.use(require('./logHandler'));
+app.use(require("./logHandler"));
 
 app.use(function clientErrorHandler(err, req, res, next) {
     if (req.xhr) {
