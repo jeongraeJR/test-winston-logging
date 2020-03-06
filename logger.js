@@ -5,7 +5,7 @@ require("dotenv").config();
 const { combine, timestamp, label, printf } = winston.format;
 
 const myFormat = printf(({ level, message, label, timestamp }) => {
-    return `${timestamp} [${label}] ${level}: ${message}`; // log 출력 포맷 정의
+    return `${timestamp} [${level}] ${message}`;
 });
 
 const options = {
@@ -15,18 +15,19 @@ const options = {
         filename: `./logs/error.log`, 
         handleExceptions: true,
         json: false,
+        prettyPrint: true,
         maxsize: 5242880, 
         colorize: false,
         format: combine(
             label({ label: "error" }),
             timestamp(),
-            myFormat // log 출력 포맷
+            myFormat 
         )
     },
     console: {
         level: process.env.level,
         handleExceptions: true,
-        json: false, // 로그형태를 json으로도 뽑을 수 있다.
+        json: false,
         colorize: true,
         format: combine(label({ label: "nba_express" }), timestamp(), myFormat)
     }
@@ -44,4 +45,12 @@ if (process.env.NODE_ENV !== "production") {
         new winston.transports.DailyRotateFile(options.file)
     );
 }
+
+
+logger.stream = {
+    write: function(message, encoding){
+        logger.info(message);
+    }
+};
+
 module.exports = logger;
